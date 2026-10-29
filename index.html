@@ -21,8 +21,8 @@
         #drift-score { position: absolute; top: 20px; right: 20px; color: white; background: rgba(0,0,0,0.7); padding: 12px 22px; border-radius: 10px; backdrop-filter: blur(10px); border: 2px solid #FFEB3B; text-align: right; min-width: 150px; }
         #drift-score .label { font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 2px; }
         #drift-score .value { font-size: 28px; font-weight: bold; color: #FFEB3B; }
-        #drift-combo { position: absolute; top: 100px; right: 20px; color: #FF9800; background: rgba(0,0,0,0.7); padding: 6px 18px; border-radius: 10px; backdrop-filter: blur(10px); font-size: 18px; font-weight: bold; opacity: 0; transition: opacity 0.2s, transform 0.2s; }
-        #drift-combo.active { opacity: 1; transform: scale(1.05); }
+        #drift-combo { position: absolute; top: 100px; right: 20px; color: #FF9800; background: rgba(0,0,0,0.7); padding: 6px 18px; border-radius: 10px; backdrop-filter: blur(10px); font-size: 18px; font-weight: bold; opacity: 0; transition: opacity 0.3s; }
+        #drift-combo.active { opacity: 1; }
         #garage { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 5, 15, 0.92); backdrop-filter: blur(15px); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 200; transition: opacity 0.4s; }
         #garage.hidden { opacity: 0; pointer-events: none; }
         #garage h2 { color: white; font-size: 42px; margin-bottom: 8px; letter-spacing: 8px; font-weight: 900; background: linear-gradient(90deg, #FF1744, #FFEB3B); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -234,20 +234,15 @@
         }
         
         // ===== ОПРЕДЕЛЕНИЯ МАШИН =====
-        // tantoya-stupa = Toyota Supra A80 Twin Turbo
-        // neasun-slide = Nissan Skyline R34 GT-R C-West (1999)
         const CAR_DEFS = [
             {
                 id: 'supra', name: 'TANTOYA STUPA (Supra A80)', color: 0xFF1744, cabinColor: 0xD50000,
                 modelUrl: 'tantoya-stupa.glb',
                 stats: { speed: 85, accel: 75, handling: 60 },
                 bodyW: 1.810, bodyH: 1.270, bodyL: 4.520,
-                maxSpeedKmh: 250,
-                mass: 1570,
-                wheelRadius: 0.315,
+                maxSpeedKmh: 250, mass: 1570, wheelRadius: 0.315,
                 gearRatios: [3.827, 2.360, 1.685, 1.312, 1.000, 0.793],
-                finalDrive: 3.133,
-                drivetrainEfficiency: 0.90,
+                finalDrive: 3.133, drivetrainEfficiency: 0.90,
                 torqueCurve: [
                     { rpm: 800, torque: 180 }, { rpm: 1500, torque: 280 }, { rpm: 2500, torque: 380 },
                     { rpm: 3600, torque: 440 }, { rpm: 4800, torque: 430 }, { rpm: 5600, torque: 380 },
@@ -255,19 +250,17 @@
                 ],
                 idleRpm: 800, redlineRpm: 7000, maxRpm: 7200, shiftUpRpm: 6500, shiftDownRpm: 2500,
                 cd: 0.32, frontalArea: 1.95, rollingResistance: 0.015, airDensity: 1.225,
-                handbrakeDecel: 4000, handbrakeGrip: 0.985, handbrakeDriftMult: 1.8
+                handbrakeDecel: 4000, handbrakeGrip: 0.985, handbrakeDriftMult: 1.8,
+                isAWD: false
             },
             {
                 id: 'neasun', name: 'NEASUN SLIDE (Skyline R34 GT-R)', color: 0x1565C0, cabinColor: 0x0D47A1,
                 modelUrl: 'neasun-slide.glb',
                 stats: { speed: 82, accel: 88, handling: 85 },
                 bodyW: 1.785, bodyH: 1.360, bodyL: 4.600,
-                maxSpeedKmh: 250,
-                mass: 1560,
-                wheelRadius: 0.320,
+                maxSpeedKmh: 250, mass: 1560, wheelRadius: 0.320,
                 gearRatios: [3.827, 2.360, 1.685, 1.312, 1.000, 0.793],
-                finalDrive: 3.545,
-                drivetrainEfficiency: 0.88,
+                finalDrive: 3.545, drivetrainEfficiency: 0.88,
                 torqueCurve: [
                     { rpm: 800, torque: 200 }, { rpm: 1500, torque: 300 }, { rpm: 2500, torque: 380 },
                     { rpm: 3500, torque: 400 }, { rpm: 4500, torque: 390 }, { rpm: 5500, torque: 350 },
@@ -288,7 +281,8 @@
                 torqueCurve: [{ rpm: 800, torque: 180 }, { rpm: 3000, torque: 350 }, { rpm: 5000, torque: 380 }, { rpm: 6000, torque: 320 }, { rpm: 6800, torque: 0 }],
                 idleRpm: 900, redlineRpm: 6800, maxRpm: 7000, shiftUpRpm: 6300, shiftDownRpm: 2600,
                 cd: 0.34, frontalArea: 1.9, rollingResistance: 0.015, airDensity: 1.225,
-                handbrakeDecel: 4000, handbrakeGrip: 0.985, handbrakeDriftMult: 2.0
+                handbrakeDecel: 4000, handbrakeGrip: 0.985, handbrakeDriftMult: 2.0,
+                isAWD: false
             },
             {
                 id: 'super', name: 'HYPER X', color: 0x00E676, cabinColor: 0x004D40,
@@ -300,7 +294,8 @@
                 torqueCurve: [{ rpm: 800, torque: 220 }, { rpm: 3000, torque: 420 }, { rpm: 5000, torque: 480 }, { rpm: 6000, torque: 450 }, { rpm: 7000, torque: 350 }, { rpm: 7500, torque: 0 }],
                 idleRpm: 900, redlineRpm: 7500, maxRpm: 7800, shiftUpRpm: 7200, shiftDownRpm: 2800,
                 cd: 0.30, frontalArea: 1.85, rollingResistance: 0.014, airDensity: 1.225,
-                handbrakeDecel: 4000, handbrakeGrip: 0.985, handbrakeDriftMult: 1.8
+                handbrakeDecel: 4000, handbrakeGrip: 0.985, handbrakeDriftMult: 1.8,
+                isAWD: false
             }
         ];
         
@@ -352,7 +347,6 @@
                 wrapper.userData.isGLB = true;
                 return wrapper;
             }
-            // Процедурная модель
             const car = new THREE.Group();
             const bodyMat = new THREE.MeshStandardMaterial({ color: def.color, roughness: 0.25, metalness: 0.7 });
             const body = new THREE.Mesh(new THREE.BoxGeometry(def.bodyW, def.bodyH, def.bodyL), bodyMat);
@@ -462,9 +456,7 @@
             handbrake: false, boost: false,
             isDrifting: false, driftAngle: 0,
             driftScore: 0, driftCombo: 1, driftTimer: 0,
-            pendingDriftScore: 0,
             wheelSpin: 0,
-            
             mass: 1570, wheelRadius: 0.315,
             gearRatios: [], finalDrive: 3.133,
             drivetrainEfficiency: 0.90, torqueCurve: [],
@@ -508,10 +500,6 @@
             carState.angle = Math.PI / 2; carState.angularVelocity = 0;
             carState.rpm = carDef.idleRpm; carState.gear = 0;
             carState.driftScore = 0; carState.driftCombo = 1; carState.isDrifting = false;
-            carState.pendingDriftScore = 0;
-            carState.driftTimer = 0;
-            carState.steerInput = 0;
-            carState.steeringAngle = 0;
             car.position.set(carState.posX, 0, carState.posZ);
             car.rotation.y = carState.angle;
         }
@@ -652,13 +640,7 @@
             carState.velocityX = 0; carState.velocityZ = 0;
             carState.angle = Math.PI / 2; carState.angularVelocity = 0;
             carState.rpm = carState.idleRpm; carState.gear = 0;
-            carState.isDrifting = false;
-            carState.driftAngle = 0;
-            carState.driftTimer = 0;
-            carState.driftCombo = 1;
-            carState.pendingDriftScore = 0;
-            carState.steerInput = 0;
-            carState.steeringAngle = 0;
+            carState.driftScore = 0; carState.driftCombo = 1; carState.isDrifting = false;
         }
         
         // ===== ФИЗИКА =====
@@ -678,50 +660,65 @@
         
         function updatePhysics(dt) {
             if (!car) return;
-
-            carState.throttle  = (keys['KeyW'] || keys['ArrowUp']) ? 1 : 0;
-            carState.brake     = (keys['KeyS'] || keys['ArrowDown']) ? 1 : 0;
+            
+            carState.throttle = (keys['KeyW'] || keys['ArrowUp']) ? 1 : 0;
+            carState.brake = (keys['KeyS'] || keys['ArrowDown']) ? 1 : 0;
             carState.handbrake = keys['Space'] === true;
-            carState.boost     = keys['ShiftLeft'] === true || keys['ShiftRight'] === true;
-
+            carState.boost = keys['ShiftLeft'] === true || keys['ShiftRight'] === true;
+            
             let targetSteer = 0;
-            if (keys['KeyA'] || keys['ArrowLeft'])  targetSteer = 1;
+            if (keys['KeyA'] || keys['ArrowLeft']) targetSteer = 1;
             if (keys['KeyD'] || keys['ArrowRight']) targetSteer = -1;
             carState.steerInput = THREE.MathUtils.lerp(carState.steerInput, targetSteer, dt * 8);
-
-            // Угол поворота колёс: чем быстрее — тем меньше угол (стабильность на скорости)
-            const speedNow = Math.hypot(carState.velocityX, carState.velocityZ);
-            const steerLimit = THREE.MathUtils.lerp(0.55, 0.22, Math.min(speedNow / 60, 1));
-            carState.steeringAngle = carState.steerInput * steerLimit;
-
-            // ===== Разложение скорости на продольную/боковую =====
-            const sinA = Math.sin(carState.angle), cosA = Math.cos(carState.angle);
-            let vForward = carState.velocityX * sinA + carState.velocityZ * cosA;
-            let vSide    = carState.velocityX * cosA - carState.velocityZ * sinA;
-
-            const absFwd = Math.abs(vForward);
-
-            // ===== Коробка =====
-            if (carState.gear === 0 && absFwd < 0.5 && carState.throttle > 0) carState.gear = 1;
-            if (carState.gear === 0 && absFwd < 0.5 && carState.brake > 0)    carState.gear = -1;
-
+            carState.steeringAngle = carState.steerInput * 0.5;
+            
+            // Скорость в локальной системе
+            let vForward = carState.velocityX * Math.sin(carState.angle) + carState.velocityZ * Math.cos(carState.angle);
+            const speed = Math.sqrt(carState.velocityX ** 2 + carState.velocityZ ** 2);
+            
+            // ===== КОРОБКА ПЕРЕДАЧ (ИСПРАВЛЕНО) =====
+            // Автоматическое включение передачи при трогании
+            if (carState.gear === 0) {
+                if (carState.throttle > 0.1) {
+                    carState.gear = 1;
+                    carState.rpm = 1500;
+                } else if (carState.brake > 0.1 && speed < 0.3) {
+                    carState.gear = -1;
+                    carState.rpm = carState.idleRpm;
+                }
+            }
+            
             if (carState.gear > 0) {
                 const gearRatio = carState.gearRatios[carState.gear - 1];
-                const wheelRpm  = (absFwd / (2 * Math.PI * carState.wheelRadius)) * 60;
+                const wheelRpm = (Math.abs(vForward) / (2 * Math.PI * carState.wheelRadius)) * 60;
                 const engineRpm = wheelRpm * gearRatio * carState.finalDrive;
-                const slipRpmBoost = carState.handbrake ? 1500 : 0;
-                const targetRpm = Math.max(carState.idleRpm + carState.throttle * 2000 + slipRpmBoost, engineRpm);
-                carState.rpm = THREE.MathUtils.lerp(carState.rpm, targetRpm, dt * 5);
-
-                if (carState.rpm > carState.shiftUpRpm && carState.gear < 6)  { carState.gear++; carState.rpm *= 0.75; }
-                else if (carState.rpm < carState.shiftDownRpm && carState.gear > 1) { carState.gear--; carState.rpm *= 1.3; }
+                
+                // При трогании (скорость < 2 м/с) обороты определяются педалью газа,
+                // а не скоростью — иначе машина не тронется (engineRpm = 0)
+                let targetRpm;
+                if (Math.abs(vForward) < 2) {
+                    targetRpm = carState.idleRpm + carState.throttle * 3500;
+                } else {
+                    targetRpm = Math.max(carState.idleRpm, engineRpm);
+                }
+                
+                carState.rpm = THREE.MathUtils.lerp(carState.rpm, targetRpm, dt * 8);
+                
+                // Переключения
+                if (carState.rpm > carState.shiftUpRpm && carState.gear < 6) {
+                    carState.gear++;
+                    carState.rpm *= 0.75;
+                } else if (carState.rpm < carState.shiftDownRpm && carState.gear > 1) {
+                    carState.gear--;
+                    carState.rpm *= 1.3;
+                }
             } else if (carState.gear === -1) {
-                carState.rpm = carState.idleRpm + carState.throttle * 2500;
+                carState.rpm = THREE.MathUtils.lerp(carState.rpm, carState.idleRpm + carState.throttle * 2500, dt * 5);
             } else {
-                carState.rpm = THREE.MathUtils.lerp(carState.rpm, carState.idleRpm + carState.throttle * 3000, dt * 3);
+                carState.rpm = THREE.MathUtils.lerp(carState.rpm, carState.idleRpm + carState.throttle * 3000, dt * 5);
             }
-
-            // ===== Сила тяги =====
+            
+            // ===== СИЛА ТЯГИ =====
             let wheelForce = 0;
             if (carState.gear > 0 && carState.throttle > 0) {
                 const torque = getTorqueAtRpm(carState.rpm) * carState.throttle;
@@ -731,121 +728,120 @@
             } else if (carState.gear === -1 && carState.brake > 0) {
                 wheelForce = -carState.brake * 3000;
             }
-
-            // ===== Тормоз =====
+            
+            // ===== ТОРМОЗА =====
             let brakeForce = 0;
-            if (carState.brake > 0 && carState.gear !== -1 && absFwd > 0.2) {
-                brakeForce = -Math.sign(vForward) * carState.brake * 9000;
+            if (carState.brake > 0 && carState.gear !== -1) {
+                if (Math.abs(vForward) > 0.2) brakeForce = -Math.sign(vForward) * carState.brake * 12000;
             }
-
-            // ===== Ручник: слабое продольное сопротивление =====
-            let handbrakeDrag = 0;
-            if (carState.handbrake && absFwd > 2) {
-                handbrakeDrag = -Math.sign(vForward) * carState.mass * 0.6;
+            
+            // ===== РУЧНИК =====
+            let handbrakeDecelForce = 0;
+            if (carState.handbrake) {
+                handbrakeDecelForce = -Math.sign(vForward) * carState.handbrakeDecel;
+                if (Math.abs(vForward) < 1) handbrakeDecelForce = 0;
             }
-
-            // ===== Аэродинамика и качение =====
-            const dragForce     = 0.5 * carState.airDensity * carState.cd * carState.frontalArea * speedNow * speedNow;
-            const dragSigned    = -Math.sign(vForward) * dragForce;
-            const rollingForce  = -Math.sign(vForward) * carState.rollingResistance * carState.mass * 9.81;
-
-            const totalForce = wheelForce + brakeForce + handbrakeDrag + dragSigned + rollingForce;
+            
+            // ===== АЭРОДИНАМИКА И КАЧЕНИЕ =====
+            const dragForce = 0.5 * carState.airDensity * carState.cd * carState.frontalArea * speed * speed;
+            const dragForceSigned = -Math.sign(vForward) * dragForce;
+            const rollingForce = -Math.sign(vForward) * carState.rollingResistance * carState.mass * 9.81;
+            
+            const totalForce = wheelForce + brakeForce + handbrakeDecelForce + dragForceSigned + rollingForce;
             const acceleration = totalForce / carState.mass;
-
-            vForward += acceleration * dt;
-
+            
+            const forwardX = Math.sin(carState.angle), forwardZ = Math.cos(carState.angle);
+            carState.velocityX += forwardX * acceleration * dt;
+            carState.velocityZ += forwardZ * acceleration * dt;
+            
+            // Ограничение максимальной скорости
             const maxSpeedMs = carState.maxSpeedKmh / 3.6;
-            vForward = THREE.MathUtils.clamp(vForward, -maxSpeedMs * 0.5, maxSpeedMs);
-
-            // ===== ПОВОРОТ КУЗОВА =====
-            if (absFwd > 0.5) {
-                let turnRate = carState.steeringAngle * 3.2;
-                turnRate *= Math.min(absFwd / 12, 1);
-                const moveDir = vForward >= 0 ? 1 : -1;
-                const driftMult = carState.handbrake ? (carState.handbrakeDriftMult * 1.4) : 1.0;
-                carState.angularVelocity = turnRate * moveDir * driftMult * 2.2;
+            const newSpeed = Math.sqrt(carState.velocityX ** 2 + carState.velocityZ ** 2);
+            if (newSpeed > maxSpeedMs) {
+                const s = maxSpeedMs / newSpeed;
+                carState.velocityX *= s; carState.velocityZ *= s;
+            }
+            
+            // ===== ПОВОРОТЫ =====
+            const speedAbs = Math.abs(vForward);
+            if (speedAbs > 0.5) {
+                let turnRate = carState.steeringAngle * 2.0;
+                turnRate *= Math.min(speedAbs / 10, 1);
+                const moveDir = vForward > 0 ? 1 : -1;
+                const driftMult = carState.handbrake ? carState.handbrakeDriftMult : 1.0;
+                carState.angularVelocity = turnRate * moveDir * driftMult * 2.5;
             } else {
-                carState.angularVelocity *= 0.85;
+                carState.angularVelocity *= 0.9;
             }
             carState.angle += carState.angularVelocity * dt;
-
+            
             // ===== БОКОВОЕ СЦЕПЛЕНИЕ =====
-            let lateralGrip;
+            const nCos = Math.cos(carState.angle), nSin = Math.sin(carState.angle);
+            const nFx = nSin, nFz = nCos, nRx = nCos, nRz = -nSin;
+            let localF = carState.velocityX * nFx + carState.velocityZ * nFz;
+            let localR = carState.velocityX * nRx + carState.velocityZ * nRz;
+            
+            let gripFactor;
             if (carState.handbrake) {
-                lateralGrip = 0.90;
-            } else if (carState.isDrifting) {
-                lateralGrip = 0.965;
+                gripFactor = carState.handbrakeGrip;
             } else {
-                lateralGrip = carState.isAWD ? 0.80 : 0.76;
+                const baseGrip = carState.isAWD ? 0.92 : 0.90;
+                gripFactor = Math.pow(baseGrip, dt * 60);
             }
-            const gripLerp = 1 - Math.pow(1 - lateralGrip, dt * 60);
-
-            const newSin = Math.sin(carState.angle), newCos = Math.cos(carState.angle);
-            let fwdNew = carState.velocityX * newSin + carState.velocityZ * newCos;
-            let sideNew = carState.velocityX * newCos - carState.velocityZ * newSin;
-            sideNew *= (1 - gripLerp);
-
-            const maxSide = carState.handbrake ? 45 : 22;
-            sideNew = THREE.MathUtils.clamp(sideNew, -maxSide, maxSide);
-
-            carState.velocityX = fwdNew * newSin + sideNew * newCos;
-            carState.velocityZ = fwdNew * newCos - sideNew * newSin;
-
+            localR *= gripFactor;
+            const maxSide = carState.handbrake ? 40 : 20;
+            localR = Math.max(-maxSide, Math.min(maxSide, localR));
+            
+            carState.velocityX = nFx * localF + nRx * localR;
+            carState.velocityZ = nFz * localF + nRz * localR;
+            
             // ===== ПОЗИЦИЯ =====
             carState.posX += carState.velocityX * dt;
             carState.posZ += carState.velocityZ * dt;
-
-            // ===== ОПРЕДЕЛЕНИЕ ДРИФТА =====
-            const speedVec = Math.hypot(carState.velocityX, carState.velocityZ);
-            const driftAngleDeg = speedVec > 0.5
-                ? Math.abs(Math.atan2(sideNew, Math.abs(fwdNew))) * 180 / Math.PI
-                : 0;
+            
+            // ===== ДРИФТ =====
+            const finalSpeed = Math.sqrt(carState.velocityX ** 2 + carState.velocityZ ** 2);
+            const driftAngleDeg = Math.abs(Math.atan2(localR, Math.abs(localF))) * 180 / Math.PI;
+            carState.isDrifting = (driftAngleDeg > 15 && finalSpeed > 8) || (carState.handbrake && finalSpeed > 5);
             carState.driftAngle = driftAngleDeg;
-
-            const nowDrifting = (driftAngleDeg > 18 && speedVec > 8) || (carState.handbrake && speedVec > 4);
-
-            if (nowDrifting) {
-                if (!carState.isDrifting) carState.driftTimer = 0;
-                carState.isDrifting = true;
+            
+            if (carState.isDrifting) {
                 carState.driftTimer += dt;
-                const gain = driftAngleDeg * speedVec * dt * 0.5;
-                carState.pendingDriftScore += gain;
-                carState.driftScore += gain;
-                carState.driftCombo = Math.min(1 + carState.driftTimer * 0.5, 5);
+                carState.driftScore += driftAngleDeg * finalSpeed * dt * 0.4;
+                carState.driftCombo = Math.min(1 + carState.driftTimer * 0.4, 5);
             } else {
-                if (carState.isDrifting) {
-                    if (carState.driftTimer > 0.8) {
-                        carState.driftScore += carState.pendingDriftScore * (carState.driftCombo - 1);
-                    }
-                    carState.pendingDriftScore = 0;
-                    carState.driftTimer = 0;
-                    carState.driftCombo = 1;
-                }
-                carState.isDrifting = false;
+                if (carState.driftTimer > 0.6) carState.driftCombo = 1;
+                carState.driftTimer = 0;
             }
-
+            
             // ===== СЛЕДЫ ШИН =====
-            const shouldDrawSkid = carState.isDrifting || (carState.handbrake && speedVec > 3);
+            const shouldDrawSkid = carState.isDrifting || (carState.handbrake && finalSpeed > 3);
+            
             if (shouldDrawSkid) {
                 const rearL_local = { x: -0.9, z: -1.4 };
-                const rearR_local = { x:  0.9, z: -1.4 };
+                const rearR_local = { x: 0.9, z: -1.4 };
+                
                 const rearL_world = {
-                    x: carState.posX + newCos * rearL_local.x + newSin * rearL_local.z,
-                    z: carState.posZ - newSin * rearL_local.x + newCos * rearL_local.z
+                    x: carState.posX + nCos * rearL_local.x + nSin * rearL_local.z,
+                    z: carState.posZ - nSin * rearL_local.x + nCos * rearL_local.z
                 };
                 const rearR_world = {
-                    x: carState.posX + newCos * rearR_local.x + newSin * rearR_local.z,
-                    z: carState.posZ - newSin * rearR_local.x + newCos * rearR_local.z
+                    x: carState.posX + nCos * rearR_local.x + nSin * rearR_local.z,
+                    z: carState.posZ - nSin * rearR_local.x + nCos * rearR_local.z
                 };
+                
                 const marks = [rearL_world, rearR_world];
                 marks.forEach((pos, i) => {
                     if (lastSkidPositions[i]) {
                         const dx = pos.x - lastSkidPositions[i].x;
                         const dz = pos.z - lastSkidPositions[i].z;
-                        if (Math.hypot(dx, dz) > 0.25) {
-                            addSkidMark((pos.x + lastSkidPositions[i].x) / 2,
-                                        (pos.z + lastSkidPositions[i].z) / 2,
-                                        Math.atan2(dx, dz));
+                        const dist = Math.sqrt(dx * dx + dz * dz);
+                        if (dist > 0.25) {
+                            addSkidMark(
+                                (pos.x + lastSkidPositions[i].x) / 2,
+                                (pos.z + lastSkidPositions[i].z) / 2,
+                                Math.atan2(dx, dz)
+                            );
                             lastSkidPositions[i] = { x: pos.x, z: pos.z };
                         }
                     } else {
@@ -856,15 +852,15 @@
                 lastSkidPositions[0] = null;
                 lastSkidPositions[1] = null;
             }
-
+            
             // ===== ВИЗУАЛ =====
             car.position.set(carState.posX, 0, carState.posZ);
             car.rotation.y = carState.angle;
-            const rollTarget  = -carState.angularVelocity * 0.06 + (carState.isDrifting ? -Math.sign(sideNew) * 0.04 : 0);
-            const pitchTarget = (carState.throttle - carState.brake) * 0.012;
-            car.rotation.z = THREE.MathUtils.lerp(car.rotation.z, rollTarget, dt * 6);
-            car.rotation.x = THREE.MathUtils.lerp(car.rotation.x, pitchTarget, dt * 6);
-
+            const rollAmount = -carState.angularVelocity * 0.05;
+            const pitchAmount = (carState.throttle - carState.brake) * 0.01;
+            car.rotation.z = THREE.MathUtils.lerp(car.rotation.z, rollAmount, dt * 5);
+            car.rotation.x = THREE.MathUtils.lerp(car.rotation.x, pitchAmount, dt * 5);
+            
             carState.wheelSpin += vForward * dt / carState.wheelRadius;
             const wheels = car.userData.wheels || [];
             for (let i = 0; i < wheels.length; i++) wheels[i].rotation.x = carState.wheelSpin;
@@ -901,11 +897,9 @@
             gearValueEl.textContent = carState.gear === 0 ? 'N' : carState.gear === -1 ? 'R' : carState.gear;
             scoreValueEl.textContent = Math.round(carState.driftScore);
             if (carState.driftCombo > 1.05) {
-                comboEl.textContent = 'x' + carState.driftCombo.toFixed(1) + '  +' + Math.round(carState.pendingDriftScore);
+                comboEl.textContent = 'x' + carState.driftCombo.toFixed(1);
                 comboEl.classList.add('active');
-            } else {
-                comboEl.classList.remove('active');
-            }
+            } else comboEl.classList.remove('active');
         }
         
         startBtn.addEventListener('click', async () => {
